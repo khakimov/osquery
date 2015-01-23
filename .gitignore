@@ -25,6 +25,7 @@
 # Build Artifacts
 .provision
 build/
+third-party/
 
 # Run Artifacts
 *.log

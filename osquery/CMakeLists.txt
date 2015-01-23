@@ -134,6 +134,12 @@ TARGET_OSQUERY_LINK_WHOLE(run libosquery_basic)
 TARGET_OSQUERY_LINK_WHOLE(run libosquery_additional)
 set_target_properties(run PROPERTIES COMPILE_FLAGS ${OS_COMPILE_FLAGS})
 
+add_executable(client main/client.cpp)
+TARGET_OSQUERY_LINK_WHOLE(client libosquery_basic)
+TARGET_OSQUERY_LINK_WHOLE(client libosquery_additional)
+set_target_properties(client PROPERTIES COMPILE_FLAGS ${OS_COMPILE_FLAGS})
+
+
 # make devel
 add_custom_target(devel
   COMMAND ${CMAKE_COMMAND}
