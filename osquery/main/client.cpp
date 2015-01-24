@@ -8,6 +8,7 @@
 #include <osquery/core/virtual_table.h>
 #include <osquery/sql.h>
 #include <osquery/database.h>
+#include <curl/curl.h>
 
 namespace dashiell{
     bool OsqueryWorker::isInit = false;
@@ -50,6 +51,21 @@ namespace dashiell{
 
 std::string hostname;
 
+
+std::string data; //will hold the urls contents
+
+size_t writeCallback(char* buf, size_t size, size_t nmemb, void* up)
+{ //callback must have this declaration
+    //buf is a pointer to the data that curl has for us
+    //size*nmemb is the size of the buffer
+
+    for (int c = 0; c<size*nmemb; c++)
+    {
+        data.push_back(buf[c]);
+    }
+    return size*nmemb; //tell curl how many bytes we handled
+}
+
 int main(int argc, char* argv[]) {
     // Get and cache our hostname, since we use it to identify ourselves
     dashiell::OsqueryWorker db;
@@ -57,4 +73,18 @@ int main(int argc, char* argv[]) {
     std::string test;
     test = db.runQuery("select * from users;");
     std::cout << test;
+
+    curl_global_init( CURL_GLOBAL_ALL );
+    CURL * myHandle;
+    CURLcode result; // We’ll store the result of CURL’s webpage retrieval, for simple error checking.
+    myHandle = curl_easy_init ( ) ;
+    // Notice the lack of major error checking, for brevity
+    curl_easy_setopt(myHandle, CURLOPT_URL, "http://127.0.0.1:8080/report");
+    // char *data="username=your_username_here&password=test";
+    curl_easy_setopt(myHandle, CURLOPT_POSTFIELDS, test.c_str());
+    curl_easy_perform( myHandle );
+
+    curl_easy_cleanup( myHandle ); 
+
+    return 0;
 }

@@ -24,6 +24,7 @@ set(OSQUERY_LIBS
   dl
   bz2
   z
+  curl
 )
 
 # The platform-specific core libraries.
